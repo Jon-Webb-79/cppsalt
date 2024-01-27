@@ -17,7 +17,7 @@ library may modify the functionality or add to the funcitonality of STL.  The
 library described in this documentation is developed under the ``cslt`` namespace.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    Exceptions <Exception>
