@@ -3,16 +3,23 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to XXXX documentation!
-==============================
-Say something about your code base here
-
+Welcome to CPPSalt documentation!
+=================================
+Some time ago I started a C library titled `CSalt <https://csalt-lib.readthedocs.io/en/latest/>`_   
+to develop a C library that priovided basic functionality and data structures for 
+Plain Old Data (POD).  I decided that for completeness I needed to provide a 
+similar library cor the C++ programming language.  However, C++ already has a robust
+library that comes with most compilers titled the Standard Template Library (STL).
+This library is not meant to replace STL, and in most instances mimics many features
+of STL.  However, the development of this library has occurred to help the author
+uncover the mechanisms and architecture of STL.  That said, in many instances, the 
+library may modify the functionality or add to the funcitonality of STL.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   module <module>
+   Exceptions <Exception>
 
 Indices and tables
 ==================
@@ -23,10 +30,78 @@ Indices and tables
 
 Installation
 ============
-This package is loaded on the PyPi repository and can be installed via the following method
+This project is covered under a basic MIT license which allows anyone to use 
+this code base or to contribute to it with the express permsission of the 
+git project owner.
 
-#. Create a python virtual environment ``python -m venv /path/to/new/virtual/environment``
-#. Activate the virtual environment with the following command;
+Use Code Base 
+-------------
+In order to download this repository from github, follow these instructions
+
+#. Ensure you have ``.git`` installed on your computer
+
+#. Ensure you have ``cmake`` installed on your computer.  This code-base requires 
+   cmake version 3.27.7 or later versions.
+
+#. Download this repository to your preferred directory with the following command;
+
+   .. code-block:: bash 
+
+      git clone https://github.com/Jon-Webb-79/cppsalt.git cppsalt 
+
+#. Navigate to either the bash or zshell scripts directory depending on your 
+   environment with one of the following commands.
+
+   .. code-block:: bash 
+
+      cd cppsalt/scripts/bash 
+      cd cppsalt/scripts/zsh 
+
+#. Build the code base with the following command.
+
+   .. code-block:: bash 
+
+      # If using bash
+      bash build.sh  
+      # If using zsh 
+      zsh build.zsh
+
+#. Compile the code base with the following command.
+
+   .. code-block:: bash 
+
+      # If using bash 
+      bash compile.sh 
+      # If using zsh 
+      zsh compile.zsh
+
+#. Navigate to ``cppsalt/cppsalt/build`` to run unit tests 
+
+   .. code-block:: bash 
+
+      valgrind ./unit_tests 
+      
+#. If all unit tests do not pass with no memory leaks, you may need to contact 
+   the administrator of this git repository.  If they do pass, then you are set 
+   to transform this code-base into a static or dynamic library, or just 
+   copy the ``.c`` and ``.h`` files to your project.
+
+Contribute to Code Base 
+-----------------------
+#. Establish a pull request with the git repository owner.
+
+#. Once the package has been downloade, you will also need to install
+   Python3.10 or later version to support documentation with Sphinx.
+
+#. Navigate to the ``cppsalt/docs/doxygen`` directory.
+
+#. Create a Python virtual environment with the following command.
+
+   .. code-block:: bash 
+
+      python -m venv .venv 
+
+#. Activate the virtual environment with the following command.
 
 .. table:: Activation Commands for Virtual Environments
 
@@ -46,21 +121,14 @@ This package is loaded on the PyPi repository and can be installed via the follo
    |                      | PowerShell       | ``PS C:\\> <venv>\\Scripts\\Activate.ps1``|
    +----------------------+------------------+-------------------------------------------+
 
-.. rst-class:: numbered-list
+#. Install packages to virtual environments from ``requirements.txt`` file
 
-#. Install poetry globally on your computer. Follow the instructions from the
-   `Poetry <https://python-poetry.org/docs/>`_ web site
-#. Set the poetry virtual environment with the following command ``poetry config virtualenvs.in-project true``
-#. Ensure you have .git installed on your computer.
-#. At your desired location create a directory titled  ``xx``
-#. Open a terminal (Bash, zsh or DOS) and cd to the ``xx`` directory
-#. Type ``git clone https://github.com/Jon-Webb-79/xx.git``
-#. Install packages with ``poetry install``
+   .. code-block:: bash 
 
+      pip install -r requirements.txt
 
-Usage
-=====
-The user instructions for this application is shown in :doc:`module`.
+#. At this point you can build the files in the same way described in the 
+   previous section and contribute to documentation.
 
 
 Contributing
