@@ -13,7 +13,8 @@ library that comes with most compilers titled the Standard Template Library (STL
 This library is not meant to replace STL, and in most instances mimics many features
 of STL.  However, the development of this library has occurred to help the author
 uncover the mechanisms and architecture of STL.  That said, in many instances, the 
-library may modify the functionality or add to the funcitonality of STL.
+library may modify the functionality or add to the funcitonality of STL.  The 
+library described in this documentation is developed under the ``cslt`` namespace.
 
 .. toctree::
    :maxdepth: 2

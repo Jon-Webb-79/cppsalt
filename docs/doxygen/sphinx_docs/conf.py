@@ -25,6 +25,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.githubpages",
     "breathe",
+    "sphinx.ext.graphviz"
 ]
 
 autodoc_member_order = "groupwise"
