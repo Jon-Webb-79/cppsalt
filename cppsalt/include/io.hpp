@@ -63,6 +63,8 @@ namespace cslt {
     class wstringstream : public std::wstringstream {};
     class streambuf : public std::streambuf {};
     class filebuf : public std::filebuf {};
+
+    using std::endl;
 }
 // ================================================================================
 // ================================================================================

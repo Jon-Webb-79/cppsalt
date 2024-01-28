@@ -21,6 +21,7 @@ library described in this documentation is developed under the ``cslt`` namespac
    :caption: Contents:
 
    dtype.h <DTypes>
+   io.h <io>
    exceptions.h <Exception>
 
 Indices and tables
