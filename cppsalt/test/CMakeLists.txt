@@ -16,6 +16,7 @@ add_executable(unit_tests
 	test_except.cpp
     test_types.cpp 
     test_io.cpp
+    test_util.cpp
 )
 
 # Link the test executable against the Hello library and cmocka
