@@ -26,6 +26,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Define the cppsalt library
 add_library(cppsalt 
     except.cpp
+    io.cpp
 )
 
 target_include_directories(cppsalt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -44,6 +45,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(unit_tests 
     test/test_except.cpp
     test/test_types.cpp
+    test/test_io.cpp
 )
 target_link_libraries(unit_tests gtest gtest_main cppsalt)
 target_compile_options(unit_tests PRIVATE -Wall -Wpedantic)

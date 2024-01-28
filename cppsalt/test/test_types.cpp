@@ -16,6 +16,7 @@
 #include "../include/dtype.hpp"
 #include <gtest/gtest.h>
 #include <type_traits>
+#include <typeinfo>
 // ================================================================================
 // ================================================================================
 // TEST SIZE_T IMPLEMENTATION 
@@ -30,6 +31,7 @@ TEST(CsltTypesTest, SizeTExists) {
 TEST(CsltTypesTest, SizeTProperties) {
     EXPECT_TRUE(std::is_unsigned<cslt::size_t>::value); // Check if it's unsigned
     EXPECT_EQ(sizeof(cslt::size_t), sizeof(std::size_t)); // Check size consistency
+    EXPECT_EQ(typeid(cslt::size_t), typeid(std::size_t)); // Chec to see if data types are identical                                                          //
 }
 // ================================================================================
 // ================================================================================
