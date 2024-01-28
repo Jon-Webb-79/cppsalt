@@ -4,7 +4,7 @@
 io.h
 ****
 
-The ``io.h`` header file in the ``cslt`` library serves as a comprehensiveinterface
+The ``io.hpp`` header file in the ``cslt`` library serves as a comprehensiveinterface
 interface to the I/O functionalities provided by the C++ Standard Library. 
 By wrapping key classes from the 
 `iostream <https://en.cppreference.com/w/cpp/header/iostream>`_, 
@@ -13,6 +13,11 @@ By wrapping key classes from the
 and `streambuf <https://cplusplus.com/reference/streambuf/streambuf/>`_ headers, 
 this library allows users to access robust I/O functionalities within the 
 ``cslt`` namespace.
+
+The ``io.hpp`` file can be accessed below.
+
+- :download:`io.hpp <../../../cppsalt/include/io.hpp>`
+- :download:`except.hpp <../../../cppsalt/io.cpp>`
 
 Wrapped Classes
 ===============
