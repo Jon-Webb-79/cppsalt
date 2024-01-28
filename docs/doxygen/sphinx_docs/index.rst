@@ -20,7 +20,8 @@ library described in this documentation is developed under the ``cslt`` namespac
    :maxdepth: 1
    :caption: Contents:
 
-   Exceptions <Exception>
+   dtype.h <DTypes>
+   exceptions.h <Exception>
 
 Indices and tables
 ==================

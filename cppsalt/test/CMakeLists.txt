@@ -13,7 +13,9 @@
 # Set minimum cmake version
 # Create the test executable using unit_test.c and test_hello.c
 add_executable(unit_tests
-	test_except.cpp)
+	test_except.cpp
+    test_types.cpp 
+)
 
 # Link the test executable against the Hello library and cmocka
 target_link_libraries(unit_tests cppsalt)
