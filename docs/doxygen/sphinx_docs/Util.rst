@@ -1,8 +1,8 @@
 .. _util:
 
-******
-util.h
-******
+********
+util.hpp
+********
 
 The ``cslt`` namespace implements an independend version of the 
 `utilities.h <https://cplusplus.com/reference/utility/>`_ header file 
@@ -155,3 +155,64 @@ This example demonstrates the use of the swap method
    >> one.second: 4
    >> two.first: 1
    >> two.second: 2
+
+cslt::move
+==========
+
+.. cpp:function:: template<typename T> typename remove_reference<T>::type&& move(T&& arg)
+
+   The ``move`` function template is used to cast its argument to an rvalue 
+   reference. This enables the use of move semantics in C++, allowing for 
+   efficient transfer of resources from one object to another.
+
+   The function takes a universal reference (also known as a forwarding reference) 
+   as its parameter, allowing it to accept both lvalue and rvalue references. 
+   The return type is an rvalue reference to the type of `arg`, with any reference 
+   qualifiers removed, facilitating the move operation.
+
+   **Template Parameters**
+
+   - **T** : The type of the argument. The actual type is deduced from the argument passed to the function.
+
+   **Function Parameters**
+
+   - **arg** : A universal reference to the object that is to be moved.
+
+   **Return Value**
+
+   - The function returns an rvalue reference to `arg` after casting.
+
+   **Usage Example**
+
+Example 
+-------
+
+.. code-block:: cpp
+
+   #include "util.hpp"
+   #include "io.hpp"
+
+   class TestClass {
+   public:
+      int value = 5;
+   }
+
+   int main() {
+        cslt::TestClass obj;
+        cslt::cout << "Data in obj: " << obj.a << cslt::endl;
+        cslt::TestClass moved_obj = cslt::move(obj);
+        // At this point move_obj contains data and obj is in an unspecified state
+        cslt::cout << "Data now in moved_obj: " << moved_obj.a << cslt::endl;
+        return 0;
+    }
+    
+.. code-block:: bash 
+
+   >> Data in obj: 5 
+   >> Data now in moved_obj: 5
+
+
+In this example, an object of `TestClass` is moved using the `move` function. After the move, `obj` is in a moved-from state, and `moved_obj` has taken ownership of the resources originally held by `obj`.
+
+.. note:: The actual moving of resources is performed by the move constructors and move assignment operators of the types involved. The `move` function only enables these operations by casting its argument to an rvalue reference.
+

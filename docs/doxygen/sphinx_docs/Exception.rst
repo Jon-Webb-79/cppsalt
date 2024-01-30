@@ -1,8 +1,8 @@
 .. _Exception:
 
-***********
-exception.h
-***********
+*************
+exception.hpp
+*************
 
 The prototypes in the ``except.hpp`` header file can be used by developers 
 to identify possible errors in code that can be identified in the classic

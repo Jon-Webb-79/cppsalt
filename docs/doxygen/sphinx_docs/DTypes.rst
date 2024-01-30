@@ -1,8 +1,8 @@
 .. _dtypes:
 
-*******
-dtype.h
-*******
+*********
+dtype.hpp
+*********
 The ``dtype.h`` header file defines several specific data types and aliases 
 to support cross-platform and generic operations.
 

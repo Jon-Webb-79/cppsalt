@@ -1,8 +1,8 @@
 .. _io:
 
-****
-io.h
-****
+******
+io.hpp
+******
 
 The ``io.hpp`` header file in the ``cslt`` library serves as a comprehensiveinterface
 interface to the I/O functionalities provided by the C++ Standard Library. 

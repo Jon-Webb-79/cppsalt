@@ -89,4 +89,45 @@ TEST(TestPair, TestSwapMethod) {
 }
 // ================================================================================
 // ================================================================================
+// TEST MOVE 
+
+class TestClass {
+public:
+    bool moved_from;
+
+    TestClass() : moved_from(false) {}
+
+    TestClass(TestClass&& other) : moved_from(false) {
+        other.moved_from = true;
+    }
+};
+// --------------------------------------------------------------------------------
+
+TEST(MoveTest, TestClassMove) {
+    TestClass obj;
+    TestClass moved_obj = cslt::move(obj);
+
+    EXPECT_TRUE(obj.moved_from); // Check if the original object is in a moved-from state
+    EXPECT_FALSE(moved_obj.moved_from); // The moved object should not be in a moved-from state
+}
+// --------------------------------------------------------------------------------
+
+TEST(MoveTest, MoveBasicType) {
+    int a = 5;
+    int b = cslt::move(a); // This should compile
+
+    EXPECT_EQ(a, 5); // Moving a basic type doesn't change its value
+    EXPECT_EQ(b, 5);
+}
+// --------------------------------------------------------------------------------
+
+TEST(MoveTest, MoveStdVector) {
+    std::vector<int> vec = {1, 2, 3};
+    std::vector<int> moved_vec = cslt::move(vec);
+
+    EXPECT_TRUE(vec.empty()); // vec should be empty after move
+    EXPECT_EQ(moved_vec.size(), 3); // moved_vec should have the elements
+}
+// ================================================================================
+// ================================================================================
 // eof
