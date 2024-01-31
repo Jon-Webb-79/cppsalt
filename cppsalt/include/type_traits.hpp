@@ -31,6 +31,9 @@ namespace cslt {
 
     template<typename T>
     using is_nothrow_move_constructible = std::is_nothrow_move_constructible<T>;
+
+    template<typename T>
+    using is_copy_constructible = std::is_copy_constructible<T>;
 // ================================================================================
 // ================================================================================ 
  

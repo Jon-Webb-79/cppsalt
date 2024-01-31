@@ -98,10 +98,24 @@ namespace cslt {
 // ================================================================================
 // ================================================================================
 
+    /**
+     * @brief Removes reference to return r value 
+     */
     template <typename T>
     typename remove_reference<T>::type move(T&& arg) {
         return static_cast<typename remove_reference<T>::type&&>(arg);
     }
+// ================================================================================
+// ================================================================================
+
+    template<typename T>
+    constexpr typename std::conditional<
+        !cslt::is_nothrow_move_constructible<T>::value && std::is_copy_constructible<T>::value,
+        const T&,
+        T&&
+    >::type move_if_noexcept(T& x) noexcept {
+        return cslt::move(x);
+    } 
 // ================================================================================
 // ================================================================================
 } /* end of cslt namespace */

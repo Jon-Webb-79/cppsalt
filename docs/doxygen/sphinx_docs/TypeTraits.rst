@@ -47,7 +47,7 @@ cslt::remove_reference
 cslt::is_nothrow_move_constructible 
 ===================================
 The ``cslt`` library implements a wrapper around the 
-`std::is_nothrow_move_constructible <https://en.cppreference.com/w/cpp/types/is_move_constructible >`_
+`std::is_nothrow_move_constructible <https://en.cppreference.com/w/cpp/types/is_move_constructible>`_
 function to provide identical functionality while using the same function name.
 
 .. cpp:struct:: template<typename T> struct is_nothrow_move_constructible
@@ -82,4 +82,41 @@ function to provide identical functionality while using the same function name.
    constructible, which may be false depending on the implementation of the 
    standard library.
 
+cslt::is_copy_constructible
+===========================
+The ``cslt`` library implements a wrapper around the 
+`std::is_copy_constructible <https://en.cppreference.com/w/cpp/types/is_copy_constructible>`_
+function to provide identical functionality while using the same function 
+name.
+
+.. cpp:struct:: template<typename T> struct is_copy_constructible
+
+   The ``is_copy_constructible`` trait in the ``cslt`` namespace is an alias 
+   to the standard library's ``std::is_copy_constructible``. It checks whether 
+   a given type `T` can be copy-constructed, i.e., whether it has a copy 
+   constructor that is accessible and not deleted.
+
+   This trait is essential for compile-time introspection in template 
+   metaprogramming, allowing developers to write generic code that adapts to 
+   the capabilities of the types it works with.
+
+   **Template Parameters**
+
+   - **T** : The type to be checked for copy constructibility.
+
+   **Member Constants**
+
+   - **value** : A static constant of type `bool`. It's `true` if the type `T` is copy constructible, and `false` otherwise.
+
+   **Usage Example**
+
+   .. code-block:: cpp
+
+      static_assert(cslt::is_copy_constructible<int>::value, "int should be copy constructible");
+      static_assert(!cslt::is_copy_constructible<std::unique_ptr<int>>::value, "std::unique_ptr<int> should not be copy constructible");
+
+   In the first example, `is_copy_constructible` is used to check if the type 
+   `int` is copy constructible. In the second example, it checks whether 
+   `std::unique_ptr<int>` is copy constructible, which is false since 
+   `std::unique_ptr` disables copy operations to enforce unique ownership semantics.
 
