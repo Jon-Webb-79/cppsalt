@@ -14,6 +14,7 @@
 
 #ifndef type_traits_HPP
 #define type_traits_HPP
+#include <type_traits>
 // ================================================================================
 // ================================================================================
 
@@ -25,7 +26,11 @@ namespace cslt {
     template<class T> struct remove_reference { typedef T type; };
     template<class T> struct remove_reference<T&> { typedef T type; };
     template<class T> struct remove_reference<T&&> { typedef T type; };
+// ================================================================================
+// ================================================================================
 
+    template<typename T>
+    using is_nothrow_move_constructible = std::is_nothrow_move_constructible<T>;
 // ================================================================================
 // ================================================================================ 
  

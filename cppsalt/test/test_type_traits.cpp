@@ -39,4 +39,28 @@ TEST(RemoveReferenceTest, RvalueReferenceTypes) {
 }
 // ================================================================================
 // ================================================================================
+
+// A test class with a noexcept move constructor
+class NoexceptMoveClass {
+public:
+    NoexceptMoveClass(NoexceptMoveClass&&) noexcept {}
+};
+// --------------------------------------------------------------------------------
+
+// A test class without a noexcept move constructor
+class ThrowingMoveClass {
+public:
+    ThrowingMoveClass(ThrowingMoveClass&&) {}
+};
+// --------------------------------------------------------------------------------
+
+TEST(IsNothrowMoveConstructibleTest, ValidatesNoexceptMoveConstructor) {
+    static_assert(cslt::is_nothrow_move_constructible<NoexceptMoveClass>::value, "NoexceptMoveClass should be nothrow move constructible");
+
+    static_assert(!cslt::is_nothrow_move_constructible<ThrowingMoveClass>::value, "ThrowingMoveClass should not be nothrow move constructible");
+
+    static_assert(cslt::is_nothrow_move_constructible<int>::value, "int should be nothrow move constructible");
+}
+// ================================================================================
+// ================================================================================
 // eof

@@ -44,3 +44,42 @@ cslt::remove_reference
 
    In these examples, `remove_reference` is applied to an int, an lvalue reference to an int, and an rvalue reference to an int. In all cases, the resulting `type` is the raw `int` type.
 
+cslt::is_nothrow_move_constructible 
+===================================
+The ``cslt`` library implements a wrapper around the 
+`std::is_nothrow_move_constructible <https://en.cppreference.com/w/cpp/types/is_move_constructible >`_
+function to provide identical functionality while using the same function name.
+
+.. cpp:struct:: template<typename T> struct is_nothrow_move_constructible
+
+   The ``is_nothrow_move_constructible`` trait checks whether a type can be
+   move-constructed without throwing exceptions. It's a type trait used for 
+   compile-time introspection to determine if a type's move constructor is 
+   declared with the ``noexcept`` specifier.
+
+   This trait is useful in template metaprogramming and generic programming for 
+   writing exception-safe code and for making decisions about employing move 
+   semantics in situations where exception safety is crucial.
+
+   **Template Parameters**
+
+   - **T** : The type to be checked for noexcept move constructibility.
+
+   **Member Constants**
+
+   - **value** : A static constant of type `bool`. It's `true` if `T` can be move-constructed without throwing exceptions, and `false` otherwise.
+
+   **Usage Example**
+
+   .. code-block:: cpp
+
+      static_assert(cslt::is_nothrow_move_constructible<int>::value, "int is noexcept move constructible");
+      static_assert(!cslt::is_nothrow_move_constructible<std::vector<int>>::value, "std::vector<int> may throw on move construction");
+
+   In the first example, `is_nothrow_move_constructible` is used to check if 
+   the type `int` is noexcept move constructible, which should be true. In the 
+   second example, it checks whether `std::vector<int>` is noexcept move 
+   constructible, which may be false depending on the implementation of the 
+   standard library.
+
+
