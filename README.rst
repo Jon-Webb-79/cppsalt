@@ -1,4 +1,5 @@
-*******
+EADME.rst
+
 CppSalt
 *******
 Some time ago I started a C library titled `CSalt <https://csalt-lib.readthedocs.io/en/latest/>`_   
@@ -51,7 +52,7 @@ In order to download this repository from github, follow these instructions
 
    .. code-block:: bash 
 
-      cd cppsalt/scripts/bash 
+      cd cppsalt/scripts/bash G
       cd cppsalt/scripts/zsh 
 
 #. Build the code base with the following command.
@@ -129,4 +130,4 @@ Contribute to Code Base
 
 Documentation
 ############
-The code in this repository is further documented at the XXX website.
+The code in this repository is further documented at the `Read the Docs <https://cppsalt.readthedocs.io/en/latest/>` website.

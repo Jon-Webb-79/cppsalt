@@ -20,11 +20,11 @@ library described in this documentation is developed under the ``cslt`` namespac
    :maxdepth: 1
    :caption: Contents:
 
-   dtype.h <DTypes>
-   io.h <io>
-   exceptions.h <Exception>
-   type_traits <TypeTraits>
-   util <Util>
+   dtype.hpp <DTypes>
+   io.hpp <io>
+   exceptions.hpp <Exception>
+   type_traits.hpp <TypeTraits>
+   util.hpp <Util>
 
 Indices and tables
 ==================

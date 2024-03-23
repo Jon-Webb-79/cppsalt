@@ -216,3 +216,45 @@ In this example, an object of `TestClass` is moved using the `move` function. Af
 
 .. note:: The actual moving of resources is performed by the move constructors and move assignment operators of the types involved. The `move` function only enables these operations by casting its argument to an rvalue reference.
 
+cslt::move_if_noexcept 
+======================
+This function is a wrapper around the C++ Standard Library's ``std::move_if_noexcept``. 
+It conditionally casts its argument to an rvalue reference, enabling move semantics 
+if the move operation is declared ``noexcept``. Otherwise, it falls back to copy 
+semantics to avoid throwing exceptions during move operations.
+
+The purpose of this wrapper is to integrate ``std::move_if_noexcept`` seamlessly 
+within the ``cslt`` namespace, allowing users of the library to utilize 
+standard move semantics optimizations while maintaining consistent namespace usage.
+
+.. cpp:function:: template<typename T> constexpr auto cslt::move_if_noexcept(T& x) noexcept
+
+
+Template Parameters
+-------------------
+
+- **T**: The type of the argument to be conditionally moved.
+
+Parameters
+----------
+
+- **x**: A reference to the object of type ``T`` that will be moved or copied, depending on its noexcept guarantee.
+
+Return Value 
+------------
+
+- Returns an rvalue reference to ``T`` if the move operation of ``T`` is noexcept; otherwise, returns ``x`` as is, promoting copy semantics.
+
+Example 
+-------
+In this example, ``cslt::move_if_noexcept`` is used to conditionally move 
+``myPair``. The actual operation (move or copy) depends on the noexcept guarantee 
+of the move constructor for ``cslt::pair<int, std::string>``.
+
+.. code-block:: cpp
+
+      cslt::pair<int, std::string> myPair(42, "example");
+      auto movedPair = cslt::move_if_noexcept(myPair);
+   
+      // Use movedPair as needed...
+

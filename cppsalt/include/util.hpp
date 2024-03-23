@@ -16,6 +16,7 @@
 #define util_HPP
 
 #include "type_traits.hpp"
+#include <utility>
 // ================================================================================
 // ================================================================================
 
@@ -109,13 +110,14 @@ namespace cslt {
 // ================================================================================
 
     template<typename T>
-    constexpr typename std::conditional<
-        !cslt::is_nothrow_move_constructible<T>::value && std::is_copy_constructible<T>::value,
-        const T&,
-        T&&
-    >::type move_if_noexcept(T& x) noexcept {
-        return cslt::move(x);
+    constexpr auto move_if_noexcept(T& x) noexcept -> decltype(std::move_if_noexcept(x)) {
+        return std::move_if_noexcept(x);
     } 
+// ================================================================================
+// ================================================================================ 
+
+    template<class T>
+    std::add_rvalue_reference_t<T> declval() noexcept;  // Note: function is not defined
 // ================================================================================
 // ================================================================================
 } /* end of cslt namespace */

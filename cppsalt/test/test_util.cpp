@@ -130,4 +130,41 @@ TEST(MoveTest, MoveStdVector) {
 }
 // ================================================================================
 // ================================================================================
+// TEST MOVE_IF_NOEXCEPT
+
+class NoexceptMoveClass {
+public:
+    bool wasMoved;
+    NoexceptMoveClass() : wasMoved(false) {}
+    NoexceptMoveClass(NoexceptMoveClass&& other) noexcept : wasMoved(true) { other.wasMoved = true; }
+    NoexceptMoveClass& operator=(NoexceptMoveClass&& other) noexcept {
+        wasMoved = true;
+        other.wasMoved = true;
+        return *this;
+    }
+};
+// --------------------------------------------------------------------------------
+// Class with throwing move constructor
+
+class ThrowingMoveClass {
+public:
+    bool wasMoved;
+    ThrowingMoveClass() : wasMoved(false) {}
+    ThrowingMoveClass(ThrowingMoveClass&& other) : wasMoved(true) { other.wasMoved = true; }
+    ThrowingMoveClass& operator=(ThrowingMoveClass&& other) {
+        wasMoved = true;
+        other.wasMoved = true;
+        return *this;
+    }
+};
+// --------------------------------------------------------------------------------
+// Test for noexcept move
+
+TEST(MoveIfNoexceptTest, NoexceptMove) {
+    NoexceptMoveClass obj;
+    NoexceptMoveClass movedObj = cslt::move_if_noexcept(obj);
+    EXPECT_TRUE(movedObj.wasMoved);
+}
+// ================================================================================
+// ================================================================================
 // eof
