@@ -15,6 +15,8 @@
 
 #include "gtest/gtest.h"
 #include <gtest/gtest.h>
+#include <type_traits>
+#include <utility>
 #include "../include/util.hpp"
 // ================================================================================
 // ================================================================================
@@ -164,6 +166,60 @@ TEST(MoveIfNoexceptTest, NoexceptMove) {
     NoexceptMoveClass obj;
     NoexceptMoveClass movedObj = cslt::move_if_noexcept(obj);
     EXPECT_TRUE(movedObj.wasMoved);
+}
+// ================================================================================
+// ================================================================================
+
+// Helper functions to identify argument types
+void consume(int&) {
+    // Function that takes an lvalue reference
+}
+
+void consume(int&&) {
+    // Function that takes an rvalue reference
+}
+
+// A helper class to test forwarding of class instances
+class MynewClass {};
+
+void consumeClass(MynewClass&) {
+    // Function that takes an lvalue reference to MynewClass
+}
+
+void consumeClass(MynewClass&&) {
+    // Function that takes an rvalue reference to MynewClass
+}
+
+// Test fixture for our tests
+class ForwardTest : public ::testing::Test {
+protected:
+    // Set-up code for each test here.
+};
+
+// Test that cslt::forward correctly forwards lvalues
+TEST_F(ForwardTest, ForwardsLvaluesCorrectly) {
+    int x = 42;
+    MynewClass myClassInstance;
+    // Expect that we can call a function expecting an lvalue reference
+    EXPECT_NO_THROW(consume(cslt::forward<int&>(x)));
+    EXPECT_NO_THROW(consumeClass(cslt::forward<MynewClass&>(myClassInstance)));
+}
+
+// Test that cslt::forward correctly forwards rvalues
+TEST_F(ForwardTest, ForwardsRvaluesCorrectly) {
+    // Expect that we can call a function expecting an rvalue reference
+    EXPECT_NO_THROW(consume(cslt::forward<int>(42)));
+    MynewClass tempClassInstance;
+    EXPECT_NO_THROW(consumeClass(cslt::forward<MynewClass>(std::move(tempClassInstance))));
+}
+
+// Test that cslt::forward can forward an lvalue as an rvalue when explicitly cast
+TEST_F(ForwardTest, ForwardsLvalueAsRvalueWhenCast) {
+    int x = 42;
+    MynewClass myClassInstance;
+    // Explicitly casting an lvalue to an rvalue reference type
+    EXPECT_NO_THROW(consume(cslt::forward<int&&>(x)));
+    EXPECT_NO_THROW(consumeClass(cslt::forward<MynewClass&&>(myClassInstance)));
 }
 // ================================================================================
 // ================================================================================

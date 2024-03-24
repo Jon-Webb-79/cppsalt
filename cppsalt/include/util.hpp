@@ -118,6 +118,21 @@ namespace cslt {
 
     template<class T>
     std::add_rvalue_reference_t<T> declval() noexcept;  // Note: function is not defined
+
+// ================================================================================
+// ================================================================================
+
+    template<typename T>
+    T&& forward(typename std::remove_reference<T>::type& arg) noexcept {
+        return static_cast<T&&>(arg);
+    }
+// --------------------------------------------------------------------------------
+
+    template<typename T>
+    T&& forward(typename std::remove_reference<T>::type&& arg) noexcept {
+        static_assert(!std::is_lvalue_reference<T>::value, "Can't forward an rvalue as an lvalue.");
+        return static_cast<T&&>(arg);
+    }
 // ================================================================================
 // ================================================================================
 } /* end of cslt namespace */

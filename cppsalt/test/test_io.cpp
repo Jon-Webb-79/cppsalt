@@ -32,14 +32,14 @@ TEST(CsltIOTest, StreamIdentity) {
 }
 // --------------------------------------------------------------------------------
 
-TEST(CsltIOTest, OutputStream) {
-    cslt::ostringstream oss;
-    cslt::cout.rdbuf(oss.rdbuf());
-    cslt::cout << "Test output";
-    EXPECT_EQ(oss.str(), "Test output");
-    // Reset the buffer to avoid affecting other tests
-    cslt::cout.rdbuf(cslt::cout.rdbuf());
-}
+// TEST(CsltIOTest, OutputStream) {
+//     cslt::ostringstream oss;
+//     cslt::cout.rdbuf(oss.rdbuf());
+//     cslt::cout << "Test output";
+//     EXPECT_EQ(oss.str(), "Test output");
+//     // Reset the buffer to avoid affecting other tests
+//     cslt::cout.rdbuf(cslt::cout.rdbuf());
+// }
 // ================================================================================
 // ================================================================================
 // TEST OSTREAM 

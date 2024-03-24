@@ -258,3 +258,62 @@ of the move constructor for ``cslt::pair<int, std::string>``.
    
       // Use movedPair as needed...
 
+cslt::forward
+=============
+This function is a custom implementation of the C++ Standard Library's ``std::forward``. 
+It is designed to perfectly forward a function argument to another function, preserving 
+the argument's value category (lvalue or rvalue). This enables the efficient use of resources 
+and optimizations, such as move semantics, without inadvertently altering the original 
+semantic intentions of the passed arguments.
+
+The ``cslt::forward`` function is pivotal in template programming, especially when creating 
+generic functions or classes that need to forward arguments to constructors or other functions 
+with perfect fidelity. It is a cornerstone of perfect forwarding, allowing developers to 
+write more generic, efficient, and safe code by ensuring that resources are moved only when 
+it is safe to do so.
+
+.. cpp:function:: template<typename T> T&& cslt::forward(typename std::remove_reference<T>::type& arg) noexcept
+
+   .. cpp:function:: template<typename T> T&& cslt::forward(typename std::remove_reference<T>::type&& arg) noexcept
+
+
+Template Parameters
+-------------------
+
+- **T**: The type of the argument to be forwarded. This type includes both lvalue 
+  and rvalue reference qualifiers to enable perfect forwarding.
+
+Parameters
+----------
+
+- **arg**: A reference to the object of type ``T``. Depending on the invocation context, 
+  ``arg`` can be an lvalue reference (if an lvalue is passed) or an rvalue reference 
+  (if an rvalue is passed), enabling the function to forward it appropriately.
+
+Return Value 
+------------
+
+- Returns the argument cast to an rvalue reference of type ``T`` if called with an rvalue, 
+  otherwise returns the argument itself, preserving its lvalue reference category. This 
+  allows the caller function or constructor to utilize the argument as intended, with 
+  move semantics applied only where permissible.
+
+Example 
+-------
+In this example, ``cslt::forward`` is used to forward arguments to a constructor of 
+``MyClass``. This demonstrates how ``cslt::forward`` enables perfect forwarding, allowing 
+the constructor to utilize move semantics when possible.
+
+.. code-block:: cpp
+
+      template<typename... Args>
+      MyClass createMyClass(Args&&... args) {
+          return MyClass(cslt::forward<Args>(args)...);
+      }
+
+      MyClass myObj = createMyClass(10, "example");
+
+In this usage, arguments passed to ``createMyClass`` are perfectly forwarded to 
+``MyClass``'s constructor, preserving their original value categories (lvalue or rvalue).
+
+

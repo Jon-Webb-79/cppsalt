@@ -130,4 +130,4 @@ Contribute to Code Base
 
 Documentation
 ############
-The code in this repository is further documented at the `Read the Docs <https://cppsalt.readthedocs.io/en/latest/>` website.
+The code in this repository is further documented at the `Read the Docs <https://cppsalt.readthedocs.io/en/latest/>`_ website.
