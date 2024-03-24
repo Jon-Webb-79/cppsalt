@@ -25,6 +25,7 @@ library described in this documentation is developed under the ``cslt`` namespac
    exceptions.hpp <Exception>
    type_traits.hpp <TypeTraits>
    util.hpp <Util>
+   memory.hpp <Memory>
 
 Indices and tables
 ==================

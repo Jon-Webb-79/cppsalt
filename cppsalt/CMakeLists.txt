@@ -48,6 +48,7 @@ add_executable(unit_tests
     test/test_io.cpp
     test/test_util.cpp
     test/test_type_traits.cpp
+    test/test_memory.cpp
 )
 target_link_libraries(unit_tests gtest gtest_main cppsalt)
 target_compile_options(unit_tests PRIVATE -Wall -Wpedantic)
