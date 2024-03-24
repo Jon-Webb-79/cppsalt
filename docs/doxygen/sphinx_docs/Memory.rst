@@ -185,3 +185,144 @@ allocated objects with ``make_unique``, promoting clean and exception-safe C++ c
 
 .. note:: Using ``make_unique`` is recommended over direct use of ``new`` for creating ``unique_ptr`` instances, as it encapsulates best practices for dynamic memory management.
 
+.. _cslt_shared_ptr:
+
+shared_ptr
+==========
+
+The ``shared_ptr`` class within the ``cslt`` namespace is a smart pointer that 
+maintains shared ownership of an object through a pointer. Multiple ``shared_ptr`` 
+instances can own the same object, and the object is destroyed automatically 
+once the last ``shared_ptr`` owning it is destroyed or reset.
+
+Purpose
+-------
+
+``shared_ptr`` is designed to facilitate advanced memory management in C++, 
+eliminating the need for manual memory management while avoiding common pitfalls 
+such as memory leaks, dangling pointers, and double frees. It is especially 
+useful in scenarios involving shared ownership, cyclic references, and polymorphism.
+
+Usage
+-----
+
+To use ``shared_ptr``, include the ``memory.hpp`` header file and instantiate a 
+``shared_ptr`` object with a dynamically allocated object. The ``shared_ptr`` 
+takes ownership of this object and manages its lifetime automatically.
+
+.. code-block:: cpp
+
+   #include "memory.hpp"
+   
+   cslt::shared_ptr<MyClass> mySharedPtr(new MyClass());
+   cslt::shared_ptr<MyClass> anotherSharedPtr = mySharedPtr; // Both now own the object.
+
+Key Methods
+-----------
+
+- **Constructor**: Initializes a new ``shared_ptr`` instance, optionally with a pointer to a dynamically allocated object.
+
+- **Destructor**: Automatically deletes the managed object if this is the last ``shared_ptr`` owning it.
+
+- **Copy Constructor**: Allows one ``shared_ptr`` instance to be initialized with another, sharing ownership of the object.
+
+- **Copy Assignment Operator**: Assigns one ``shared_ptr`` to another, sharing ownership of the object and properly managing reference counting.
+
+- **Move Constructor and Move Assignment Operator**: Transfers ownership from one ``shared_ptr`` to another, leaving the moved-from ``shared_ptr`` empty.
+
+- **reset()**: Replaces the managed object with another or resets the ``shared_ptr`` to empty, managing reference counting appropriately.
+
+- **swap()**: Swaps the contents of two ``shared_ptr`` instances.
+
+- **operator* and operator->**: Provide access to the underlying object.
+
+- **get()**: Returns a pointer to the managed object.
+
+- **explicit operator bool()**: Checks if the ``shared_ptr`` is non-null.
+
+Example
+-------
+
+.. code-block:: cpp
+
+   cslt::shared_ptr<int> ptr(new int(10));
+   cslt::shared_ptr<int> copy = ptr; // Copy constructor shares ownership.
+   cslt::shared_ptr<int> moved = std::move(ptr); // Move constructor transfers ownership.
+   // ptr is now empty, moved and copy share ownership of the int.
+
+.. note:: ``shared_ptr`` ensures that dynamically allocated objects are deleted when no longer needed, simplifying memory management in C++ applications.
+
+This smart pointer is a critical component of modern C++ memory management, 
+encouraging safe and efficient practices by automating the management of dynamic 
+memory and shared ownership.
+
+.. _cslt_make_shared:
+
+make_shared
+===========
+
+The ``make_shared`` function is a utility within the ``cslt`` namespace designed 
+to create a ``shared_ptr`` instance while directly initializing the managed 
+object. This function provides an efficient way to allocate and initialize 
+dynamic objects and their associated control block (which includes the reference 
+counter) in a single operation.
+
+Purpose
+-------
+
+Using ``make_shared`` not only simplifies the syntax for creating a ``shared_ptr`` 
+but also optimizes memory usage by combining the allocation of the object and its 
+control block into a single memory allocation. This results in fewer dynamic 
+allocations, reduced memory overhead, and potential performance improvements in 
+applications that frequently create and destroy shared objects.
+
+Usage
+-----
+
+To use ``make_shared``, include the ``memory.hpp`` header file. Then, call 
+``make_shared`` with the type of the object you wish to create and any arguments 
+needed for its constructor.
+
+.. code-block:: cpp
+
+   #include "memory.hpp"
+   
+   // Creates a shared_ptr managing a MyClass instance.
+   cslt::shared_ptr<MyClass> mySharedPtr = cslt::make_shared<MyClass>(arg1, arg2);
+
+Key Function Signature
+----------------------
+
+.. code-block:: cpp
+
+   template <typename T, typename... Args>
+   cslt::shared_ptr<T> make_shared(Args&&... args);
+
+- **T**: The type of the object to be managed by the returned ``shared_ptr``.
+- **Args...**: A variadic template parameter pack representing the types of arguments to be forwarded to the constructor of ``T``.
+
+Parameters
+----------
+
+- **args...**: Arguments to be forwarded to the constructor of the managed object.
+
+Return Value
+------------
+
+- Returns a ``cslt::shared_ptr<T>`` managing a new instance of ``T`` initialized with the provided arguments.
+
+Example
+-------
+
+.. code-block:: cpp
+
+   auto sharedPtr = cslt::make_shared<std::string>("Hello, make_shared!");
+   std::cout << *sharedPtr << std::endl;  // Output: Hello, make_shared!
+
+.. note:: ``make_shared`` is particularly useful in scenarios where an object is immediately intended to be managed by a ``shared_ptr``, as it streamlines object creation and initialization into a single expressive statement.
+
+This function is a fundamental part of the ``cslt`` memory management utilities, 
+reflecting modern best practices in C++ for creating shared ownership semantics 
+around dynamically allocated objects.
+
+

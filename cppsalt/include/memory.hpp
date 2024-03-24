@@ -144,6 +144,7 @@ namespace cslt {
     private:
         T* ptr = nullptr;
         unsigned* counter = nullptr; // Pointer to the reference count
+// --------------------------------------------------------------------------------
 
         void release() {
             if (counter && --(*counter) == 0) {
@@ -153,15 +154,18 @@ namespace cslt {
             ptr = nullptr;
             counter = nullptr;
         }
+// ================================================================================
 
     public:
         // Default constructor
         explicit shared_ptr(T* p = nullptr) : ptr(p), counter(p ? new unsigned(1) : nullptr) {}
+// --------------------------------------------------------------------------------
 
         // Destructor
         ~shared_ptr() {
             release();
         }
+// --------------------------------------------------------------------------------
 
         // Copy constructor
         shared_ptr(const shared_ptr& other) : ptr(other.ptr), counter(other.counter) {
@@ -169,6 +173,7 @@ namespace cslt {
                 (*counter)++;
             }
         }
+// --------------------------------------------------------------------------------
 
         // Copy assignment operator
         shared_ptr& operator=(const shared_ptr& other) {
@@ -182,12 +187,14 @@ namespace cslt {
             }
             return *this;
         }
+// --------------------------------------------------------------------------------
 
         // Move constructor
         shared_ptr(shared_ptr&& other) noexcept : ptr(other.ptr), counter(other.counter) {
             other.ptr = nullptr;
             other.counter = nullptr;
         }
+// --------------------------------------------------------------------------------
 
         // Move assignment operator
         shared_ptr& operator=(shared_ptr&& other) noexcept {
@@ -200,6 +207,7 @@ namespace cslt {
             }
             return *this;
         }
+// --------------------------------------------------------------------------------
 
         // Reset method
         void reset(T* p = nullptr) {
@@ -209,12 +217,14 @@ namespace cslt {
                 counter = p ? new unsigned(1) : nullptr;
             }
         }
+// --------------------------------------------------------------------------------
 
         // Swap method
         void swap(shared_ptr& other) noexcept {
             cslt::swap(ptr, other.ptr);
             cslt::swap(counter, other.counter);
         }
+// --------------------------------------------------------------------------------
 
         // Dereference and arrow operators
         T& operator*() const { return *ptr; }
@@ -225,6 +235,7 @@ namespace cslt {
 
         // Additional utility methods...
     };
+    
 // ================================================================================
 // ================================================================================
 
