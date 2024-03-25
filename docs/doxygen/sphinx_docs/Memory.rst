@@ -325,4 +325,78 @@ This function is a fundamental part of the ``cslt`` memory management utilities,
 reflecting modern best practices in C++ for creating shared ownership semantics 
 around dynamically allocated objects.
 
+.. _cslt_array_ptr:
+
+array_ptr
+=========
+
+The ``array_ptr`` class within the ``cslt`` namespace provides a smart pointer 
+abstraction for managing dynamic arrays in C++. It encapsulates a pointer to a 
+dynamically allocated array of objects, ensuring automatic deallocation upon 
+destruction. This class is designed to facilitate memory management tasks, 
+offering mechanisms for array reallocation, and safe access patterns.
+
+Purpose
+-------
+
+Managing dynamic arrays in C++ requires careful handling of memory allocation and 
+deallocation to avoid memory leaks and undefined behavior. The ``array_ptr`` 
+class automates these tasks, providing a convenient and safer interface for working 
+with dynamically allocated arrays. It supports operations such as resizing the 
+array, releasing ownership of the array, and resetting the array with a new allocation.
+
+Usage
+-----
+
+To use ``array_ptr``, include the header file where it is defined, and instantiate 
+an ``array_ptr`` object with the desired array size:
+
+.. code-block:: cpp
+
+   #include "memory.hpp"  // Adjust the include path as necessary
+
+   cslt::array_ptr<int> myArray(10);  // Creates an array_ptr managing an array of 10 integers
+
+Key Features and Methods
+------------------------
+
+- **Constructor**: Initializes a new ``array_ptr`` instance with a specified array size. Allocates memory for the array accordingly.
+
+- **Destructor**: Automatically deallocates the managed array, ensuring no memory leaks.
+
+- **Copy Constructor and Assignment**: Creates a deep copy of another ``array_ptr``, allocating a new array and copying the elements.
+
+- **Move Constructor and Assignment**: Transfers ownership of the managed array from one ``array_ptr`` to another, leaving the source ``array_ptr`` empty.
+
+- **realloc**: Resizes the managed array, potentially allocating a new array and copying elements from the old array.
+
+- **reset**: Replaces the managed array with a new array, optionally of a different size.
+
+- **release**: Releases ownership of the managed array, returning a pointer to the array and leaving the ``array_ptr`` empty.
+
+- **operator[]**: Provides access to elements of the managed array, with bounds checking to ensure safe access.
+
+- **operator bool**: Checks if the ``array_ptr`` is managing an array (non-empty).
+
+Example
+-------
+
+The following example demonstrates basic usage of ``array_ptr``, including 
+instantiation, element access, and resizing:
+
+.. code-block:: cpp
+
+   cslt::array_ptr<int> arr(5);  // Manages an array of 5 integers
+   for (std::size_t i = 0; i < arr.size(); ++i) {
+       arr[i] = static_cast<int>(i * 10);  // Access and assign values to array elements
+   }
+
+   arr.realloc(10);  // Resize the array to 10 elements
+
+.. note:: The ``array_ptr`` class simplifies dynamic array management in C++, automating memory allocation and deallocation while providing safe access and modification mechanisms.
+
+This documentation outlines the `array_ptr` class's purpose, usage, key methods, 
+and provides an example to help users understand how to utilize the class in 
+their projects. Make sure to adjust paths and namespaces according to your 
+project's structure.
 
