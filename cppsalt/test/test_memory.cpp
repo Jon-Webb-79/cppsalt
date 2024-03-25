@@ -237,4 +237,83 @@ TEST_F(SharedPtrTest, ResetToNullptr) {
 }
 // ================================================================================
 // ================================================================================
+// ARRAY_PTR TESTS 
+
+class ArrayPtrTest : public ::testing::Test {
+protected:
+    // Setup and teardown functions can be added here if needed
+};
+
+TEST_F(ArrayPtrTest, InstantiationAndDestruction) {
+    {
+        cslt::array_ptr<int> arr(5);
+        EXPECT_EQ(arr.size(), 5);
+    }
+    // No explicit checks after destruction, but this test ensures no crashes/leaks
+}
+
+TEST_F(ArrayPtrTest, ReallocSmallerSize) {
+    cslt::array_ptr<int> arr(5);
+    arr.realloc(3, true); // Reduce size to 3
+    EXPECT_EQ(arr.size(), 3);
+}
+
+TEST_F(ArrayPtrTest, ReallocLargerSize) {
+    cslt::array_ptr<int> arr(5);
+    arr.realloc(10); // Increase size to 10
+    EXPECT_EQ(arr.size(), 10);
+}
+
+TEST_F(ArrayPtrTest, ReallocNoReduce) {
+    cslt::array_ptr<int> arr(5);
+    arr.realloc(3, false); // Attempt to reduce size, but with reduce_size = false
+    EXPECT_EQ(arr.size(), 5); // Size should remain unchanged
+}
+
+TEST_F(ArrayPtrTest, Reset) {
+    cslt::array_ptr<int> arr(5);
+    arr.reset(new int[10], 10);
+    EXPECT_EQ(arr.size(), 10);
+}
+
+TEST_F(ArrayPtrTest, Release) {
+    cslt::array_ptr<int> arr(5);
+    int* rawPtr = arr.release();
+    EXPECT_EQ(arr.size(), 0);
+    EXPECT_FALSE(arr);
+    delete[] rawPtr; // Cleanup
+}
+
+TEST_F(ArrayPtrTest, MoveConstructor) {
+    cslt::array_ptr<int> original(5);
+    cslt::array_ptr<int> moved(std::move(original));
+    EXPECT_EQ(moved.size(), 5);
+    EXPECT_FALSE(original);
+}
+
+TEST_F(ArrayPtrTest, MoveAssignment) {
+    cslt::array_ptr<int> original(5);
+    cslt::array_ptr<int> moved;
+    moved = std::move(original);
+    EXPECT_EQ(moved.size(), 5);
+    EXPECT_FALSE(original);
+}
+
+TEST_F(ArrayPtrTest, CopyConstructor) {
+    cslt::array_ptr<int> original(5);
+    cslt::array_ptr<int> copy = original;
+    EXPECT_EQ(copy.size(), 5);
+    EXPECT_EQ(original.size(), 5); // Ensure original is unchanged
+}
+
+TEST_F(ArrayPtrTest, CopyAssignment) {
+    cslt::array_ptr<int> original(5);
+    cslt::array_ptr<int> copy;
+    copy = original;
+    EXPECT_EQ(copy.size(), 5);
+    EXPECT_EQ(original.size(), 5); // Ensure original is unchanged
+    EXPECT_EQ(0, 0);
+}
+// ================================================================================
+// ================================================================================
 // eof

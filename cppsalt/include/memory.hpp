@@ -16,6 +16,9 @@
 #define cslt_memory_HPP 
 
 #include "util.hpp"
+#include "dtype.hpp"
+#include "except.hpp"
+#include <algorithm>
 // ================================================================================
 // ================================================================================
 
@@ -246,6 +249,137 @@ namespace cslt {
     shared_ptr<T> make_shared(Args&&... args) {
         return shared_ptr<T>(new T(cslt::forward<Args>(args)...));
     }
+// ================================================================================
+// ================================================================================
+
+    /**
+     * @brief This class helps manage contiguous memory allocations
+     *
+     * This class allows a user to manage contiguous memory allocations similar to
+     * the unique_ptr class; however, this class also provides methods for reallocation
+     * of memory similar to a c-style realloc command.
+     * 
+     * @tparam T the data type of the array pointer.
+     * @param buff The buffer size as the number of allocated indices of type T
+     */
+    template <typename T>
+    class array_ptr {
+    private:
+        T* ptr = nullptr;
+        cslt::size_t _len = 0;
+// ================================================================================
+
+    public:
+   
+        /**
+         * @brief the Constructor
+         */
+        explicit array_ptr(std::size_t buff = 0) : ptr(buff > 0 ? new T[buff] : nullptr), _len(buff) {}
+// --------------------------------------------------------------------------------
+
+        /**
+         * @brief The destructor
+         */
+        ~array_ptr() {
+            delete[] ptr;
+        }
+// --------------------------------------------------------------------------------
+
+        // Copy constructor
+        array_ptr(const array_ptr& other) : ptr(other._len > 0 ? new T[other._len] : nullptr), _len(other._len) {
+            std::copy(other.ptr, other.ptr + other._len, ptr);
+        }
+// --------------------------------------------------------------------------------
+
+        // Copy assignment operator
+        array_ptr& operator=(const array_ptr& other) {
+            if (this != &other) { // Guard against self-assignment
+                delete[] ptr; // Free existing resource
+                _len = other._len;
+                ptr = other._len > 0 ? new T[other._len] : nullptr;
+                std::copy(other.ptr, other.ptr + other._len, ptr);
+            }
+            return *this;
+        }
+// --------------------------------------------------------------------------------
+
+        // Move constructor
+        array_ptr(array_ptr&& other) noexcept : ptr(other.ptr), _len(other._len) {
+            other.ptr = nullptr;
+            other._len = 0;
+        }
+// --------------------------------------------------------------------------------
+
+        // Move assignment operator
+        array_ptr& operator=(array_ptr&& other) noexcept {
+            if (this != &other) {
+                delete[] ptr; // Free existing array
+                ptr = other.ptr;
+                _len = other._len;
+                other.ptr = nullptr;
+                other._len = 0;
+            }
+            return *this;
+        }
+// --------------------------------------------------------------------------------
+
+        void realloc(cslt::size_t buff, bool reduce_size = true) {
+            if (!reduce_size && buff < _len) {
+                // If not reducing size and the new buffer is smaller, do nothing
+                return;
+            }
+
+            T* newPtr = buff > 0 ? new T[buff] : nullptr;
+
+            cslt::size_t numElementsToCopy = std::min(buff, _len);
+            for (cslt::size_t i = 0; i < numElementsToCopy; ++i) {
+                newPtr[i] = cslt::move_if_noexcept(ptr[i]);
+            }
+
+            delete[] ptr;
+
+            ptr = newPtr;
+            _len = buff;
+        }
+// --------------------------------------------------------------------------------
+
+        T& operator*() const {return *ptr;}
+        T* operator->() const {return ptr;}
+        T& operator[](cslt::size_t index) const {
+            if (index >= _len)
+                throw cslt::out_of_range("Index out of range");
+            return ptr[index];
+        }
+        T& operator[](cslt::size_t index) {
+            if (index >= _len)
+                throw cslt::out_of_range("Index out of range");
+            return ptr[index];
+        }
+
+        explicit operator bool() const {return ptr != nullptr;}
+// --------------------------------------------------------------------------------
+
+        T* release() {
+            T* temp = ptr;
+            ptr = nullptr;
+            _len = 0;
+            return temp;
+        }
+// --------------------------------------------------------------------------------
+
+        void reset(T* p = nullptr, std::size_t newLen = 0) {
+            if (ptr != p) {
+                delete[] ptr;
+                ptr = p;
+                _len = newLen; // Consider if you want to keep this pattern
+            }
+        }
+// --------------------------------------------------------------------------------
+
+        cslt::size_t size() const {
+            return _len;
+        }
+    };
 // ================================================================================
 // ================================================================================
 
