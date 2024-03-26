@@ -84,19 +84,71 @@ of ``unique_ptr`` by passing a pointer to a dynamically allocated object.
 Key Methods
 -----------
 
-- **Constructor**: Initializes a new ``unique_ptr`` instance, optionally taking a pointer to a dynamically allocated object.
+.. function:: explicit unique_ptr(T* p)
 
-- **Destructor**: Automatically deletes the managed object when the ``unique_ptr`` goes out of scope.
+   Initializes a new ``unique_ptr`` instance, optionally taking a pointer to a dynamically allocated object. ``unique_ptr`` takes full ownership of this object, managing its lifecycle automatically.
 
-- **operator* and operator->**: Provides access to the underlying object.
+   :param T* p: A pointer to a dynamically allocated object of type ``T``, or ``nullptr`` to indicate that the ``unique_ptr`` does not initially manage any object.
 
-- **get()**: Returns a pointer to the managed object.
+.. function:: unique_ptr(std::nullptr_t)
 
-- **release()**: Releases ownership of the managed object and returns a pointer to it, without deleting it.
+   Initializes a new ``unique_ptr`` instance that does not manage any object initially.
 
-- **reset()**: Deletes the managed object and optionally replaces it with a new one.
+   :param std::nullptr_t: A ``nullptr`` indicating that the ``unique_ptr`` does not manage any object.
 
-- **move constructor and move assignment operator**: Allows transfer of ownership between ``unique_ptr`` instances, utilizing C++ move semantics.
+.. function:: ~unique_ptr()
+
+   Automatically deletes the managed object when the ``unique_ptr`` goes out of scope, ensuring proper resource cleanup.
+
+.. function:: T& operator*() const
+
+   Provides access to the underlying object.
+
+   :return: A reference to the managed object of type ``T``.
+
+.. function:: T* operator->() const
+
+   Provides access to the member functions of the managed object, behaving as if the ``unique_ptr`` was a pointer to ``T``.
+
+   :return: A pointer to the managed object of type ``T``.
+
+.. function:: const T* get() const
+
+   Returns a pointer to the managed object, or ``nullptr`` if no object is being managed.
+
+   :return: A pointer to the managed object of type ``T``, or ``nullptr`` if no object is being managed.
+
+.. function:: T* release()
+
+   Releases ownership of the managed object and returns a pointer to it. The ``unique_ptr`` will no longer manage the object and will not delete it when destroyed.
+
+   :return: A pointer to the previously managed object of type ``T``, or ``nullptr`` if there was no managed object.
+
+.. function:: void reset(T* p = nullptr)
+
+   Deletes the currently managed object, if any, and takes ownership of a new object.
+
+   :param T* p: A pointer to a new dynamically allocated object of type ``T``, or ``nullptr`` to make the ``unique_ptr`` not manage any object.
+
+.. function:: unique_ptr(unique_ptr&& move) noexcept
+
+   Move constructor that transfers ownership of the managed object from another ``unique_ptr``.
+
+   :param unique_ptr&& move: An rvalue reference to another ``unique_ptr`` object of the same type.
+
+.. function:: unique_ptr& operator=(unique_ptr&& move) noexcept
+
+   Move assignment operator that transfers ownership of the managed object from another ``unique_ptr`` and deletes the currently managed object, if any.
+
+   :param unique_ptr&& move: An rvalue reference to another ``unique_ptr`` object of the same type.
+   :return: A reference to *this ``unique_ptr`` object.
+
+.. function:: explicit operator bool() const
+
+   Checks if the ``unique_ptr`` currently manages an object.
+
+   :return: ``true`` if the ``unique_ptr`` manages an object, otherwise ``false``.
+
 
 Example
 -------
@@ -157,33 +209,36 @@ the provided arguments to the constructor of the specified type, returning a
 Parameters
 ----------
 
-- **T**: The type of the object to be created and managed by the returned ``unique_ptr``.
+.. function:: template <typename T, typename... Args> unique_ptr<T> make_unique(Args&&... args)
 
-- **Args**: A variadic template parameter pack representing the types of arguments to be forwarded to the constructor of ``T``.
+   Creates a dynamically allocated object of type ``T``, wrapping it in a ``unique_ptr``. This function template simplifies the process of creating a ``unique_ptr``, ensuring safe, exception-friendly allocation and initialization of resources.
 
-- **args**: The actual arguments to be forwarded to the constructor of ``T``, preserving their lvalue or rvalue status.
+   :tparam T: The type of the object to be created and managed by the returned ``unique_ptr``.
+   :tparam Args: A variadic template parameter pack representing the types of arguments to be forwarded to the constructor of ``T``.
+   
+   :param Args&&... args: The actual arguments to be forwarded to the constructor of ``T``, preserving their lvalue or rvalue nature through perfect forwarding.
 
-Return Value
-------------
-
-- Returns a ``cslt::unique_ptr<T>`` instance that owns the newly created object of type ``T``.
+   :return: A ``cslt::unique_ptr<T>`` managing the newly created object of type ``T``. This ``unique_ptr`` takes ownership of the object, ensuring its proper deletion when the ``unique_ptr`` goes out of scope or is otherwise disposed of.
 
 Example
 -------
 
-The following example demonstrates how to create a ``unique_ptr`` to an instance 
-of ``MyClass`` using ``make_unique``, passing constructor arguments directly:
+The ``make_unique`` function can be used to instantiate objects of any class that requires arguments for its constructor, automatically managing the object's lifetime through a ``unique_ptr``. Here is an example of its use:
 
 .. code-block:: cpp
 
-   auto myPtr = cslt::make_unique<MyClass>(10, "example");
-   
-   // myPtr now owns the dynamically allocated MyClass instance.
+   struct Example {
+       Example(int x, const std::string& y) : num(x), str(y) {}
+       int num;
+       std::string str;
+   };
 
-This example highlights the ease and safety of creating and managing dynamically 
-allocated objects with ``make_unique``, promoting clean and exception-safe C++ code.
+   auto examplePtr = cslt::make_unique<Example>(42, "Hello World");
 
-.. note:: Using ``make_unique`` is recommended over direct use of ``new`` for creating ``unique_ptr`` instances, as it encapsulates best practices for dynamic memory management.
+   // examplePtr is a unique_ptr<Example> that owns an Example object initialized with 42 and "Hello World".
+
+.. note:: The use of ``make_unique`` is highly recommended for safely creating dynamically allocated objects in modern C++. It encapsulates the best practices of resource management, combining safe allocation with automatic resource cleanup, thereby reducing the risk of memory leaks and pointer-related errors.
+
 
 .. _cslt_shared_ptr:
 
@@ -220,25 +275,84 @@ takes ownership of this object and manages its lifetime automatically.
 Key Methods
 -----------
 
-- **Constructor**: Initializes a new ``shared_ptr`` instance, optionally with a pointer to a dynamically allocated object.
+.. function:: explicit shared_ptr(T* p = nullptr)
 
-- **Destructor**: Automatically deletes the managed object if this is the last ``shared_ptr`` owning it.
+   Initializes a new ``shared_ptr`` instance, taking ownership of the dynamically allocated object pointed to by ``p``. If ``p`` is ``nullptr``, the ``shared_ptr`` is initialized to manage no object.
 
-- **Copy Constructor**: Allows one ``shared_ptr`` instance to be initialized with another, sharing ownership of the object.
+   :param T* p: A pointer to a dynamically allocated object of type ``T``, or ``nullptr``.
 
-- **Copy Assignment Operator**: Assigns one ``shared_ptr`` to another, sharing ownership of the object and properly managing reference counting.
+.. function:: shared_ptr(std::nullptr_t)
 
-- **Move Constructor and Move Assignment Operator**: Transfers ownership from one ``shared_ptr`` to another, leaving the moved-from ``shared_ptr`` empty.
+   Initializes a new ``shared_ptr`` instance that manages no object.
 
-- **reset()**: Replaces the managed object with another or resets the ``shared_ptr`` to empty, managing reference counting appropriately.
+   :param std::nullptr_t: A ``nullptr`` indicating that the ``shared_ptr`` does not manage any object.
 
-- **swap()**: Swaps the contents of two ``shared_ptr`` instances.
+.. function:: ~shared_ptr()
 
-- **operator* and operator->**: Provide access to the underlying object.
+   The destructor that automatically deletes the managed object if this ``shared_ptr`` is the last one owning it.
 
-- **get()**: Returns a pointer to the managed object.
+.. function:: shared_ptr(const shared_ptr& other)
 
-- **explicit operator bool()**: Checks if the ``shared_ptr`` is non-null.
+   Copy constructor that creates a new ``shared_ptr`` instance which shares ownership of the object managed by ``other``.
+
+   :param const shared_ptr& other: Another ``shared_ptr`` instance to share the ownership with.
+
+.. function:: shared_ptr& operator=(const shared_ptr& other)
+
+   Copy assignment operator that makes this ``shared_ptr`` share ownership of the object managed by ``other``, releasing any object previously managed by this instance.
+
+   :param const shared_ptr& other: Another ``shared_ptr`` instance to share the ownership with.
+   :return: A reference to this ``shared_ptr`` instance.
+
+.. function:: shared_ptr(shared_ptr&& other) noexcept
+
+   Move constructor that transfers ownership of the managed object from ``other`` to this instance. ``other`` is left managing no object.
+
+   :param shared_ptr&& other: An rvalue reference to another ``shared_ptr`` instance.
+   
+.. function:: shared_ptr& operator=(shared_ptr&& other) noexcept
+
+   Move assignment operator that transfers ownership of the managed object from ``other`` to this instance, releasing any object previously managed by this instance. ``other`` is left managing no object.
+
+   :param shared_ptr&& other: An rvalue reference to another ``shared_ptr`` instance.
+   :return: A reference to this ``shared_ptr`` instance.
+
+.. function:: void reset(T* p = nullptr)
+
+   Replaces the managed object with another dynamically allocated object ``p``, or resets this ``shared_ptr`` to manage no object if ``p`` is ``nullptr``.
+
+   :param T* p: A pointer to a new dynamically allocated object of type ``T``, or ``nullptr``.
+
+.. function:: void swap(shared_ptr& other) noexcept
+
+   Swaps the managed object and the reference counter with another ``shared_ptr`` instance.
+
+   :param shared_ptr& other: Another ``shared_ptr`` instance to swap with.
+
+.. function:: T& operator*() const
+
+   Provides dereferenced access to the managed object.
+
+   :return: A reference to the managed object of type ``T``.
+
+.. function:: T* operator->() const
+
+   Provides pointer-like access to the managed object, allowing access to its members.
+
+   :return: A pointer to the managed object of type ``T``.
+
+.. function:: const T* get() const
+
+   Returns a pointer to the managed object, or ``nullptr`` if no object is being managed.
+
+   :return: A pointer to the managed object of type ``T``, or ``nullptr``.
+
+.. function:: explicit operator bool() const
+
+   Checks whether this ``shared_ptr`` instance is managing an object.
+
+   :return: ``true`` if this ``shared_ptr`` is managing an object, otherwise ``false``.
+
 
 Example
 -------
@@ -304,12 +418,16 @@ Key Function Signature
 Parameters
 ----------
 
-- **args...**: Arguments to be forwarded to the constructor of the managed object.
+.. function:: template <typename T, typename... Args> cslt::shared_ptr<T> make_shared(Args&&... args)
 
-Return Value
-------------
+   Creates a dynamically allocated object of type ``T``, managed by a ``shared_ptr``, while efficiently combining the allocation of the object and its control block into a single memory allocation. This utility function is designed to simplify the creation of shared objects and optimize memory usage.
 
-- Returns a ``cslt::shared_ptr<T>`` managing a new instance of ``T`` initialized with the provided arguments.
+   :tparam T: The type of the object to be managed by the returned ``shared_ptr``.
+   :tparam Args: A variadic template parameter pack representing the types of arguments to be forwarded to the constructor of ``T``.
+
+   :param Args&&... args: The arguments to be forwarded to the constructor of ``T``, preserving their lvalue or rvalue status through perfect forwarding.
+
+   :return: A ``cslt::shared_ptr<T>`` managing a new instance of ``T`` initialized with the provided arguments.
 
 Example
 -------
@@ -360,23 +478,80 @@ an ``array_ptr`` object with the desired array size:
 Key Features and Methods
 ------------------------
 
-- **Constructor**: Initializes a new ``array_ptr`` instance with a specified array size. Allocates memory for the array accordingly.
+.. function:: explicit array_ptr(std::size_t buff = 0)
 
-- **Destructor**: Automatically deallocates the managed array, ensuring no memory leaks.
+   Initializes a new ``array_ptr`` instance, optionally specifying the size of the array to allocate. This constructor allocates memory for an array of type ``T`` with ``buff`` elements.
 
-- **Copy Constructor and Assignment**: Creates a deep copy of another ``array_ptr``, allocating a new array and copying the elements.
+   :param std::size_t buff: The size of the array to allocate. Defaults to 0, indicating no allocation.
 
-- **Move Constructor and Assignment**: Transfers ownership of the managed array from one ``array_ptr`` to another, leaving the source ``array_ptr`` empty.
+.. function:: array_ptr(std::nullptr_t)
 
-- **realloc**: Resizes the managed array, potentially allocating a new array and copying elements from the old array.
+   Initializes a new ``array_ptr`` instance that does not manage any array, effectively pointing to ``nullptr``.
 
-- **reset**: Replaces the managed array with a new array, optionally of a different size.
+   :param std::nullptr_t: A ``nullptr`` indicating that the ``array_ptr`` does not manage any array.
 
-- **release**: Releases ownership of the managed array, returning a pointer to the array and leaving the ``array_ptr`` empty.
+.. function:: ~array_ptr()
 
-- **operator[]**: Provides access to elements of the managed array, with bounds checking to ensure safe access.
+   The destructor that automatically deallocates the managed array, ensuring proper resource cleanup.
 
-- **operator bool**: Checks if the ``array_ptr`` is managing an array (non-empty).
+.. function:: array_ptr(const array_ptr& other)
+
+   Copy constructor that creates a new ``array_ptr`` instance which makes a deep copy of the array managed by ``other``, including allocating a new array and copying all elements.
+
+   :param const array_ptr& other: Another ``array_ptr`` instance to copy from.
+
+.. function:: array_ptr& operator=(const array_ptr& other)
+
+   Copy assignment operator that assigns the current ``array_ptr`` instance to manage a deep copy of the array managed by ``other``, including allocating a new array and copying all elements. Any previously managed array is properly deallocated.
+
+   :param const array_ptr& other: Another ``array_ptr`` instance to assign from.
+   :return: A reference to this ``array_ptr`` instance.
+
+.. function:: array_ptr(array_ptr&& other) noexcept
+
+   Move constructor that transfers ownership of the managed array from ``other`` to this instance. ``other`` is left in a valid but empty state.
+
+   :param array_ptr&& other: An rvalue reference to another ``array_ptr`` instance.
+
+.. function:: array_ptr& operator=(array_ptr&& other) noexcept
+
+   Move assignment operator that transfers ownership of the managed array from ``other`` to this instance, properly deallocating any previously managed array. ``other`` is left in a valid but empty state.
+
+   :param array_ptr&& other: An rvalue reference to another ``array_ptr`` instance.
+   :return: A reference to this ``array_ptr`` instance.
+
+.. function:: void realloc(std::size_t buff, bool reduce_size = true)
+
+   Resizes the managed array to a new size, potentially allocating a new array and copying elements from the old array. Can optionally prevent reducing the array size based on the ``reduce_size`` parameter.
+
+   :param std::size_t buff: The new size for the array.
+   :param bool reduce_size: Whether the function is allowed to reduce the array's size (default is true).
+
+.. function:: void reset(T* p = nullptr, std::size_t newLen = 0)
+
+   Replaces the managed array with a new array specified by ``p``, optionally of a different size specified by ``newLen``. The previously managed array is properly deallocated.
+
+   :param T* p: A pointer to a new array of type ``T``, or ``nullptr``.
+   :param std::size_t newLen: The size of the new array. Ignored if ``p`` is ``nullptr``.
+
+.. function:: T* release()
+
+   Releases ownership of the managed array and returns a pointer to it. The ``array_ptr`` instance is reset to manage no array.
+
+   :return: A pointer to the previously managed array, or ``nullptr`` if no array was managed.
+
+.. function:: T& operator[](std::size_t index) const
+
+   Provides access to the element at the specified index in the managed array, with bounds checking.
+
+   :param std::size_t index: The index of the element to access.
+   :return: A reference to the element at the specified index.
+
+.. function:: explicit operator bool() const
+
+   Checks if the ``array_ptr`` is currently managing an array.
+
+   :return: ``true`` if the ``array_ptr`` manages an array, otherwise ``false``.
 
 Example
 -------

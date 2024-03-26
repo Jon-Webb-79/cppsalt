@@ -38,6 +38,7 @@ namespace cslt {
 
     public:
         explicit unique_ptr(T *p) : ptr(p) {}
+        unique_ptr(std::nullptr_t) : ptr(nullptr) {}
 // --------------------------------------------------------------------------------
 
         ~unique_ptr() {
@@ -90,7 +91,7 @@ namespace cslt {
         /**
          * @brief returns pointer to ptr
          */
-        T* get() const {return ptr;}
+        const T* get() const {return ptr;}
 // --------------------------------------------------------------------------------
 
         /**
@@ -162,6 +163,8 @@ namespace cslt {
     public:
         // Default constructor
         explicit shared_ptr(T* p = nullptr) : ptr(p), counter(p ? new unsigned(1) : nullptr) {}
+        shared_ptr(std::nullptr_t) : ptr(nullptr), counter(nullptr) {}
+
 // --------------------------------------------------------------------------------
 
         // Destructor
@@ -187,6 +190,17 @@ namespace cslt {
                 if (counter) {
                     (*counter)++;
                 }
+            }
+            return *this;
+        }
+// --------------------------------------------------------------------------------
+
+        // Assignment operator from raw pointer, to manage resource assignment
+        shared_ptr& operator=(T* p) {
+            if (ptr != p) {
+                release(); // Clean up current managed object, if any
+                ptr = p;
+                counter = p ? new unsigned(1) : nullptr; // Allocate counter if p is not nullptr
             }
             return *this;
         }
@@ -236,7 +250,7 @@ namespace cslt {
         // Conversion to bool for checking if non-null
         explicit operator bool() const { return ptr != nullptr; }
 
-        // Additional utility methods...
+        const T* get() const {return ptr;}
     };
     
 // ================================================================================
@@ -275,6 +289,8 @@ namespace cslt {
          * @brief the Constructor
          */
         explicit array_ptr(std::size_t buff = 0) : ptr(buff > 0 ? new T[buff] : nullptr), _len(buff) {}
+        array_ptr(std::nullptr_t) : ptr(nullptr), _len(0) {}
+
 // --------------------------------------------------------------------------------
 
         /**
@@ -379,6 +395,9 @@ namespace cslt {
         cslt::size_t size() const {
             return _len;
         }
+// --------------------------------------------------------------------------------
+
+        const T* get() const {return ptr;}
     };
 // ================================================================================
 // ================================================================================
